@@ -1,0 +1,22 @@
+table { 
+  table-layout: fixed; 
+}
+
+td { 
+  width: 33%; 
+  font-family: avenir;
+}
+
+.button{
+  background:    #20a8c2;
+  background:    -webkit-linear-gradient(#20a8c2, #199fbb);
+  background:    linear-gradient(#20a8c2, #199fbb);
+  border-radius: 5px;
+  color:         #fff;
+  display:       inline-block;
+  padding:       8px 20px;
+  font:          normal 700 24px/1 "Calibri", sans-serif;
+  text-align:    center;
+  text-shadow:   1px 1px 0 #20a8c2;
+
+}
