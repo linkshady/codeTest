@@ -1,10 +1,42 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 require('angular')
 require('angular-ui-bootstrap')
+require('./services/api')
+require('./filters/filters')
 var MainController = require('./controllers/MainController');
 
 
-var app = angular.module('app',['ui.bootstrap']).filter('limitDecimal',function($filter){
+var app = angular.module('app',['ui.bootstrap', 'app.services', 'app.filters'])
+app.controller('MainController', ['$scope', '$http','API', MainController])
+
+
+},{"./controllers/MainController":2,"./filters/filters":3,"./services/api":4,"angular":8,"angular-ui-bootstrap":6}],2:[function(require,module,exports){
+
+module.exports = function($scope, $http, API){
+  $scope.message = "AWWWW it wdddddorks";
+
+  $scope.currentPage = 1;
+
+    $scope.$watch('currentPage', function() {
+        API.getValues($scope.currentPage).then(function(results){
+         $scope.totalItems = results.data.total;
+         $scope.bigTotalItems = results.data.total;
+         $scope.data = results.data.assets;
+        })  
+    });
+
+  $scope.setPage = function (pageNo) {
+    $scope.currentPage = pageNo;
+  };
+  $scope.maxSize = 10;
+  $scope.bigCurrentPage = 1;
+  $scope.itemsPerPage = 5;
+  
+}
+},{}],3:[function(require,module,exports){
+var filters = angular.module('app.filters', []);
+
+filters.filter('limitDecimal',function($filter){
       return function (input, places) {
         if (isNaN(input)) return input;
         // If we want 1 decimal place, we want to mult/div by 10
@@ -14,18 +46,14 @@ var app = angular.module('app',['ui.bootstrap']).filter('limitDecimal',function(
         return Math.round(input * factor) / factor;
     };
 })
-app.controller('MainController', ['$scope', '$http', MainController])
+},{}],4:[function(require,module,exports){
+var services = angular.module('app.services',[]);
 
+services.factory('API', function($http){
 
-},{"./controllers/MainController":2,"angular":6,"angular-ui-bootstrap":4}],2:[function(require,module,exports){
-
-module.exports = function($scope, $http){
-  $scope.message = "AWWWW it wdddddorks";
-
-  $scope.currentPage = 1;
-
-    function call(page){
-      $http({
+  return{
+    getValues: function(page){
+      var resultsPromise = $http({
         url: 'http://ec2-52-86-89-220.compute-1.amazonaws.com/api/assets/search',
         method: 'POST',
         data:
@@ -35,37 +63,17 @@ module.exports = function($scope, $http){
       },
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       }).then(function (results) {
-        $scope.totalItems = results.data.total;
-        $scope.bigTotalItems = results.data.total;
-        $scope.data = results.data.assets;
-        console.log($scope.data);
+        console.log("funciono");
         return results;
       }).catch(function (e) {
       });
+
+      return resultsPromise;
     }
 
-    $scope.$watch('currentPage', function() {
-        call($scope.currentPage);
-    });
-
-  $scope.setPage = function (pageNo) {
-    $scope.currentPage = pageNo;
-  };
-//latitude = data.coordinates.lat,
-//longitude = data.coordinates.lon,
-//location= data.location,
-//media + copy_size = data.media and data.copy_size,
-//cpm = data.cpm
-//and add button
-  $scope.maxSize = 10;
-  $scope.bigCurrentPage = 1;
-  $scope.itemsPerPage = 5;
-
-
-
-  
-}
-},{}],3:[function(require,module,exports){
+  }
+})
+},{}],5:[function(require,module,exports){
 /*
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
@@ -7534,12 +7542,12 @@ angular.module('ui.bootstrap.datepickerPopup').run(function() {!angular.$$csp().
 angular.module('ui.bootstrap.tooltip').run(function() {!angular.$$csp().noInlineStyle && !angular.$$uibTooltipCss && angular.element(document).find('head').prepend('<style type="text/css">[uib-tooltip-popup].tooltip.top-left > .tooltip-arrow,[uib-tooltip-popup].tooltip.top-right > .tooltip-arrow,[uib-tooltip-popup].tooltip.bottom-left > .tooltip-arrow,[uib-tooltip-popup].tooltip.bottom-right > .tooltip-arrow,[uib-tooltip-popup].tooltip.left-top > .tooltip-arrow,[uib-tooltip-popup].tooltip.left-bottom > .tooltip-arrow,[uib-tooltip-popup].tooltip.right-top > .tooltip-arrow,[uib-tooltip-popup].tooltip.right-bottom > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.top-left > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.top-right > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.bottom-left > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.bottom-right > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.left-top > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.left-bottom > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.right-top > .tooltip-arrow,[uib-tooltip-html-popup].tooltip.right-bottom > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.top-left > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.top-right > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.bottom-left > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.bottom-right > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.left-top > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.left-bottom > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.right-top > .tooltip-arrow,[uib-tooltip-template-popup].tooltip.right-bottom > .tooltip-arrow,[uib-popover-popup].popover.top-left > .arrow,[uib-popover-popup].popover.top-right > .arrow,[uib-popover-popup].popover.bottom-left > .arrow,[uib-popover-popup].popover.bottom-right > .arrow,[uib-popover-popup].popover.left-top > .arrow,[uib-popover-popup].popover.left-bottom > .arrow,[uib-popover-popup].popover.right-top > .arrow,[uib-popover-popup].popover.right-bottom > .arrow,[uib-popover-html-popup].popover.top-left > .arrow,[uib-popover-html-popup].popover.top-right > .arrow,[uib-popover-html-popup].popover.bottom-left > .arrow,[uib-popover-html-popup].popover.bottom-right > .arrow,[uib-popover-html-popup].popover.left-top > .arrow,[uib-popover-html-popup].popover.left-bottom > .arrow,[uib-popover-html-popup].popover.right-top > .arrow,[uib-popover-html-popup].popover.right-bottom > .arrow,[uib-popover-template-popup].popover.top-left > .arrow,[uib-popover-template-popup].popover.top-right > .arrow,[uib-popover-template-popup].popover.bottom-left > .arrow,[uib-popover-template-popup].popover.bottom-right > .arrow,[uib-popover-template-popup].popover.left-top > .arrow,[uib-popover-template-popup].popover.left-bottom > .arrow,[uib-popover-template-popup].popover.right-top > .arrow,[uib-popover-template-popup].popover.right-bottom > .arrow{top:auto;bottom:auto;left:auto;right:auto;margin:0;}[uib-popover-popup].popover,[uib-popover-html-popup].popover,[uib-popover-template-popup].popover{display:block !important;}</style>'); angular.$$uibTooltipCss = true; });
 angular.module('ui.bootstrap.timepicker').run(function() {!angular.$$csp().noInlineStyle && !angular.$$uibTimepickerCss && angular.element(document).find('head').prepend('<style type="text/css">.uib-time input{width:50px;}</style>'); angular.$$uibTimepickerCss = true; });
 angular.module('ui.bootstrap.typeahead').run(function() {!angular.$$csp().noInlineStyle && !angular.$$uibTypeaheadCss && angular.element(document).find('head').prepend('<style type="text/css">[uib-typeahead-popup].dropdown-menu{display:block;}</style>'); angular.$$uibTypeaheadCss = true; });
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 require('./dist/ui-bootstrap-tpls');
 
 module.exports = 'ui.bootstrap';
 
-},{"./dist/ui-bootstrap-tpls":3}],5:[function(require,module,exports){
+},{"./dist/ui-bootstrap-tpls":5}],7:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -39308,8 +39316,8 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":5}]},{},[1]);
+},{"./angular":7}]},{},[1]);
